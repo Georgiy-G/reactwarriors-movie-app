@@ -4,7 +4,6 @@ import MoviesList from "./Movies/MoviesList";
 
 export default class App extends React.Component {
   render() {
-    console.log(11)
     return (
       <div className="container">
         <div className="row mt-4">
