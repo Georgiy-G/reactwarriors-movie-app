@@ -11,8 +11,9 @@ export default class MovieList extends Component {
     };
   }
 
-  componentDidMount() {
-    const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=ru-RU`;
+  getMovies = page => {
+    const { sortBy } = this.props;
+    const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=ru-RU&sort_by=${sortBy}&page=${page}`;
     fetch(link)
       .then(response => {
         return response.json();
@@ -22,6 +23,21 @@ export default class MovieList extends Component {
           movies: data.results
         });
       });
+  };
+  componentDidMount() {
+    this.getMovies();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { page, sortBy, onChangePage } = this.props;
+    if (sortBy !== prevProps.sortBy) {
+      onChangePage(1);
+      this.getMovies(1);
+    }
+
+    if (page !== prevProps.page) {
+      this.getMovies(page);
+    }
   }
 
   render() {
@@ -29,11 +45,13 @@ export default class MovieList extends Component {
     return (
       <div className="row">
         {movies.map(movie => {
-          return (
-            <div key={movie.id} className="col-6 mb-4">
-              <MovieItem item={movie} />
-            </div>
-          );
+          if (movie) {
+            return (
+              <div key={movie.id} className="col-6 mb-4">
+                <MovieItem item={movie} />
+              </div>
+            );
+          }
         })}
       </div>
     );
