@@ -1,19 +1,22 @@
 import React, { Component } from "react";
+import _ from "lodash";
 import MovieItem from "./MovieItem";
 import { API_URL, API_KEY_3 } from "../../api/api";
 
 export default class MovieList extends Component {
-  constructor() {
-    super();
-
+  constructor(props) {
+    super(props);
     this.state = {
       movies: []
     };
   }
 
   getMovies = page => {
-    const { sortBy } = this.props;
-    const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=ru-RU&sort_by=${sortBy}&page=${page}`;
+    const {
+      filters: { sortBy, year },
+      onChangeTotalPage
+    } = this.props;
+    const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=ru-RU&sort_by=${sortBy}&page=${page}&primary_release_year=${year}`;
     fetch(link)
       .then(response => {
         return response.json();
@@ -22,15 +25,17 @@ export default class MovieList extends Component {
         this.setState({
           movies: data.results
         });
+        onChangeTotalPage(data.total_results);
       });
   };
+
   componentDidMount() {
     this.getMovies();
   }
 
   componentDidUpdate(prevProps) {
-    const { page, sortBy, onChangePage } = this.props;
-    if (sortBy !== prevProps.sortBy) {
+    const { page, onChangePage, filters } = this.props;
+    if (!_.isEqual(filters, prevProps.filters)) {
       onChangePage(1);
       this.getMovies(1);
     }
@@ -45,13 +50,13 @@ export default class MovieList extends Component {
     return (
       <div className="row">
         {movies.map(movie => {
-          if (movie) {
-            return (
+          return (
+            movie && (
               <div key={movie.id} className="col-6 mb-4">
                 <MovieItem item={movie} />
               </div>
-            );
-          }
+            )
+          );
         })}
       </div>
     );

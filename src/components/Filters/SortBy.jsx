@@ -26,7 +26,11 @@ export default class SortBy extends React.Component {
     return (
       <div className="form-group">
         <label htmlFor="sort_by">Сортировать по:</label>
-        <select className="form-control" onChange={onChangeFilters}>
+        <select
+          className="form-control"
+          name="sortBy"
+          onChange={onChangeFilters}
+        >
           {options.map((option, key) => (
             <option key={key} value={option.value}>
               {option.label}
