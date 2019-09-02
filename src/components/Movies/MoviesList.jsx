@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import _ from "lodash";
 import MovieItem from "./MovieItem";
 import { API_URL, API_KEY_3 } from "../../api/api";
 
@@ -13,10 +12,10 @@ export default class MovieList extends Component {
 
   getMovies = page => {
     const {
-      filters: { sortBy, year },
+      filters: { sortBy, year, genres },
       onChangeTotalPage
     } = this.props;
-    const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=ru-RU&sort_by=${sortBy}&page=${page}&primary_release_year=${year}`;
+    const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=ru-RU&sort_by=${sortBy}&page=${page}&primary_release_year=${year}&with_genres=${genres}`;
     fetch(link)
       .then(response => {
         return response.json();
@@ -35,7 +34,7 @@ export default class MovieList extends Component {
 
   componentDidUpdate(prevProps) {
     const { page, onChangePage, filters } = this.props;
-    if (!_.isEqual(filters, prevProps.filters)) {
+    if (filters !== prevProps.filters) {
       onChangePage(1);
       this.getMovies(1);
     }

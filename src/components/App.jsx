@@ -9,7 +9,9 @@ export default class App extends React.Component {
     this.initialStateFilter = {
       filters: {
         sortBy: "popularity.desc",
-        year: ""
+        year: "",
+        allGenres: [],
+        genres: []
       }
     };
     this.state = {
@@ -25,9 +27,7 @@ export default class App extends React.Component {
       [e.target.name]: e.target.value
     };
     this.setState({
-      filters: {
-        ...newFilters
-      }
+      filters: newFilters
     });
   };
 
@@ -43,12 +43,45 @@ export default class App extends React.Component {
     });
   };
 
+  onChangeAllGenres = data => {
+    this.setState(prevState => ({
+      filters: {
+        ...prevState.filters,
+        allGenres: data
+      }
+    }));
+  };
+
+  onChangeGenres = e => {
+    const value = e.target.value;
+    const isAvailableGenre = this.state.filters.genres.includes(value);
+
+    let newArray;
+    if (isAvailableGenre) {
+      newArray = this.state.filters.genres.filter(
+        item => Number(item) !== Number(value)
+      );
+    } else {
+      newArray = [...this.state.filters.genres, e.target.value];
+    }
+
+    const newFilters = {
+      ...this.state.filters,
+      genres: newArray
+    };
+
+    this.setState({
+      filters: newFilters
+    });
+  };
+
   resetFilter = () => {
     this.setState(prevState => ({
       ...prevState,
       ...this.initialStateFilter
     }));
   };
+
   render() {
     const { filters, page, totalPages } = this.state;
     return (
@@ -59,9 +92,12 @@ export default class App extends React.Component {
               <div className="card-body">
                 <h3>Фильтры:</h3>
                 <Filters
+                  filters={filters}
                   resetFilter={this.resetFilter}
                   onChangeFilters={this.onChangeFilters}
                   onChangePage={this.onChangePage}
+                  onChangeAllGenres={this.onChangeAllGenres}
+                  onChangeGenres={this.onChangeGenres}
                   page={page}
                   totalPages={totalPages}
                 />
