@@ -53,16 +53,17 @@ export default class App extends React.Component {
   };
 
   onChangeGenres = e => {
+    const {
+      filters: { genres }
+    } = this.state;
     const value = e.target.value;
-    const isAvailableGenre = this.state.filters.genres.includes(value);
+    const isAvailableGenre = genres.includes(value);
 
     let newArray;
     if (isAvailableGenre) {
-      newArray = this.state.filters.genres.filter(
-        item => Number(item) !== Number(value)
-      );
+      newArray = genres.filter(item => Number(item) !== Number(value));
     } else {
-      newArray = [...this.state.filters.genres, e.target.value];
+      newArray = [...genres, e.target.value];
     }
 
     const newFilters = {
