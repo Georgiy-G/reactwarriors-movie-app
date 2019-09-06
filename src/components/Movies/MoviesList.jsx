@@ -10,10 +10,10 @@ export default class MovieList extends Component {
     };
   }
 
-  getMovies = page => {
+  getMovies = (page = 1) => {
     const {
       filters: { sortBy, year, genres },
-      onChangeTotalPage
+      onChangePagination
     } = this.props;
     const link = `${API_URL}/discover/movie?api_key=${API_KEY_3}&language=ru-RU&sort_by=${sortBy}&page=${page}&primary_release_year=${year}&with_genres=${genres}`;
     fetch(link)
@@ -24,7 +24,7 @@ export default class MovieList extends Component {
         this.setState({
           movies: data.results
         });
-        onChangeTotalPage(data.total_results);
+        onChangePagination({ name: "totalPages", value: data.total_results });
       });
   };
 
@@ -33,13 +33,17 @@ export default class MovieList extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { page, onChangePage, filters } = this.props;
+    const {
+      pagination: { page },
+      onChangePagination,
+      filters
+    } = this.props;
     if (filters !== prevProps.filters) {
-      onChangePage(1);
+      onChangePagination({ name: "page", value: 1 });
       this.getMovies(1);
     }
 
-    if (page !== prevProps.page) {
+    if (page !== prevProps.pagination.page) {
       this.getMovies(page);
     }
   }

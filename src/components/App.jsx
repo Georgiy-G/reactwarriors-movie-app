@@ -10,14 +10,15 @@ export default class App extends React.Component {
       filters: {
         sortBy: "popularity.desc",
         year: "",
-        allGenres: [],
         genres: []
       }
     };
     this.state = {
       ...this.initialStateFilter,
-      page: 1,
-      totalPages: null
+      pagination: {
+        page: 1,
+        totalPages: null
+      }
     };
   }
 
@@ -31,60 +32,28 @@ export default class App extends React.Component {
     });
   };
 
-  onChangePage = page => {
-    this.setState({
-      page
-    });
-  };
-
-  onChangeTotalPage = totalPages => {
-    this.setState({
-      totalPages
-    });
-  };
-
-  onChangeAllGenres = data => {
-    this.setState(prevState => ({
-      filters: {
-        ...prevState.filters,
-        allGenres: data
+  onChangePagination = ({ name, value }) => {
+    this.setState(state => ({
+      pagination: {
+        ...state.pagination,
+        [name]: value
       }
     }));
-  };
-
-  onChangeGenres = e => {
-    const {
-      filters: { genres }
-    } = this.state;
-    const value = e.target.value;
-    const isAvailableGenre = genres.includes(value);
-
-    let newArray;
-    if (isAvailableGenre) {
-      newArray = genres.filter(item => Number(item) !== Number(value));
-    } else {
-      newArray = [...genres, e.target.value];
-    }
-
-    const newFilters = {
-      ...this.state.filters,
-      genres: newArray
-    };
-
-    this.setState({
-      filters: newFilters
-    });
   };
 
   resetFilter = () => {
     this.setState(prevState => ({
       ...prevState,
-      ...this.initialStateFilter
+      ...this.initialStateFilter,
+      pagination: {
+        page: 1,
+        totalPages: null
+      }
     }));
   };
 
   render() {
-    const { filters, page, totalPages } = this.state;
+    const { filters, pagination, totalPages } = this.state;
     return (
       <div className="container">
         <div className="row mt-4">
@@ -96,10 +65,8 @@ export default class App extends React.Component {
                   filters={filters}
                   resetFilter={this.resetFilter}
                   onChangeFilters={this.onChangeFilters}
-                  onChangePage={this.onChangePage}
-                  onChangeAllGenres={this.onChangeAllGenres}
-                  onChangeGenres={this.onChangeGenres}
-                  page={page}
+                  onChangePagination={this.onChangePagination}
+                  pagination={pagination}
                   totalPages={totalPages}
                 />
               </div>
@@ -107,10 +74,9 @@ export default class App extends React.Component {
           </div>
           <div className="col-8">
             <MoviesList
-              onChangeTotalPage={this.onChangeTotalPage}
+              onChangePagination={this.onChangePagination}
               filters={filters}
-              page={page}
-              onChangePage={this.onChangePage}
+              pagination={pagination}
             />
           </div>
         </div>

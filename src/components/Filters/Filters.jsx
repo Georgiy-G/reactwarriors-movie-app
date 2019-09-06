@@ -9,10 +9,8 @@ export default class Filters extends React.Component {
   render() {
     const {
       onChangeFilters,
-      page,
-      onChangePage,
-      onChangeAllGenres,
-      onChangeGenres,
+      pagination,
+      onChangePagination,
       totalPages,
       resetFilter,
       filters: { genres, allGenres }
@@ -24,13 +22,11 @@ export default class Filters extends React.Component {
         <Genres
           allGenres={allGenres}
           genres={genres}
-          onChangeAllGenres={onChangeAllGenres}
-          onChangeGenres={onChangeGenres}
           onChangeFilters={onChangeFilters}
         />
         <Pagination
-          page={page}
-          onChangePage={onChangePage}
+          pagination={pagination}
+          onChangePagination={onChangePagination}
           totalPages={totalPages}
         />
         <Reset resetFilter={resetFilter} />

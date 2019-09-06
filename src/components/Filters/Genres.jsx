@@ -2,6 +2,10 @@ import React from "react";
 import { API_KEY_3, API_URL } from "../../api/api";
 
 export default class Genres extends React.Component {
+  state = {
+    allGenres: []
+  };
+
   getGenres = () => {
     const link = `${API_URL}/genre/movie/list?api_key=${API_KEY_3}`;
     fetch(link)
@@ -9,15 +13,33 @@ export default class Genres extends React.Component {
         return response.json();
       })
       .then(data => {
-        this.props.onChangeAllGenres(data.genres);
+        this.setState({
+          allGenres: data.genres
+        });
       });
   };
 
   componentDidMount() {
     this.getGenres();
   }
+
+  onChangeGenres = e => {
+    const value = +e.target.value;
+    const name = e.target.name;
+    const { genres, onChangeFilters } = this.props;
+    onChangeFilters({
+      target: {
+        name,
+        value: genres.includes(value)
+          ? genres.filter(item => item !== value)
+          : [...genres, value]
+      }
+    });
+  };
+
   render() {
-    const { allGenres, onChangeGenres } = this.props;
+    const { genres } = this.props;
+    const { allGenres } = this.state;
     return (
       <div>
         {allGenres.map((genre, key) => {
@@ -28,7 +50,8 @@ export default class Genres extends React.Component {
                 name="genres"
                 value={genre.id}
                 type="checkbox"
-                onChange={onChangeGenres}
+                checked={genres.includes(genre.id)}
+                onChange={this.onChangeGenres}
               />
               <label htmlFor={genre.name} className="ml-2">
                 {genre.name}
