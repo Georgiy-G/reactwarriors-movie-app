@@ -6,15 +6,12 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.initialStateFilter = {
+    this.state = {
       filters: {
         sortBy: "popularity.desc",
         year: "",
         genres: []
-      }
-    };
-    this.state = {
-      ...this.initialStateFilter,
+      },
       pagination: {
         page: 1,
         totalPages: null
@@ -42,14 +39,17 @@ export default class App extends React.Component {
   };
 
   resetFilter = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      ...this.initialStateFilter,
+    this.setState({
+      filters: {
+        sortBy: "popularity.desc",
+        year: "",
+        genres: []
+      },
       pagination: {
         page: 1,
         totalPages: null
       }
-    }));
+    });
   };
 
   render() {
